@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    t1.addSpeech("Lorem", "");
+                    t1.addSpeech("dolor", "");
                     t1.setLanguage(Locale.UK);
                 }
             }
@@ -52,6 +52,7 @@ public class HomeFragment extends Fragment {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     t2.setLanguage(Locale.GERMAN);
+                    t2.setSpeechRate((float) 0.4);
                 }
             }
         });
@@ -61,12 +62,13 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 String toSpeak = ed1.getText().toString();
                 //Toast.makeText(root.getContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                for (Object s: t1.getVoices().toArray()) {
+                /*for (Object s: t1.getVoices().toArray()) {
                     System.out.println(s.toString());
-                }
+                }*/
                 //Toast.makeText(root.getContext(), t1.getVoices().toString(), Toast.LENGTH_LONG).show();
                 t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                 t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                t2.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, )
                 //System.out.println(ed1.getText());
             }
         });
