@@ -1,7 +1,6 @@
 package com.example.customtts.ui.home;
 
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -19,7 +18,6 @@ import com.example.customtts.R;
 import com.example.customtts.databinding.FragmentHomeBinding;
 
 import java.util.Locale;
-import java.util.Random;
 
 public class HomeFragment extends Fragment {
 
@@ -56,7 +54,7 @@ public class HomeFragment extends Fragment {
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
                     t2.setLanguage(Locale.UK);
-                    t2.setSpeechRate((float) 0.8);
+                    //t2.setSpeechRate((float) 0.8);
                     t2.setPitch((float)0.1);
                 }
             }
@@ -67,7 +65,7 @@ public class HomeFragment extends Fragment {
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 // The onLoadComplet method is called when a sound has completed loading.
                 soundPool.play(sampleId, 1f, 1f, 0, 0, 1);
-                soundPool.setVolume(sampleId, 2f, 2f);
+                //soundPool.setVolume(sampleId, 2f, 2f);
                 // second and third parameters indicates left and right value (range = 0.0 to 1.0)
             }
         });
@@ -76,17 +74,51 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String toSpeak = ed1.getText().toString();
+
+
                 //Toast.makeText(root.getContext(), toSpeak,Toast.LENGTH_SHORT).show();
                 /*for (Object s: t1.getVoices().toArray()) {
                     System.out.println(s.toString());
                 }*/
                 //Toast.makeText(root.getContext(), t1.getVoices().toString(), Toast.LENGTH_LONG).show();
                 //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                playTTS(root, toSpeak);
+                try {
+                    playBeeps(root);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
+
+                //System.out.println(ed1.getText());
+            }
+        });
+
+        return root;
+    }
+
+    public void playTTS(View root, String toSpeak)
+    {
+
+        Runnable runnable = new Runnable() {
+            public void run() {
                 t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
-                //mp.start();
-                while (t1.isSpeaking()) {
-                    int randInt = (int) (Math.random() * (7-1+1)+1);
-                    switch (randInt){
+                //t2.stop();
+            }
+        };
+
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+    }
+
+    public void playBeeps(View root) throws InterruptedException {
+
+        Runnable runnable = new Runnable() {
+            public void run() {
+
+                while (t2.isSpeaking()) {
+                    int randInt = (int) (Math.random() * (7 - 1 + 1) + 1);
+                    switch (randInt) {
                         case 1:
                             int sound1 = pl.load(root.getContext(), R.raw.voice_gaster_1, 0);
                             pl.pause(sound1);
@@ -108,17 +140,23 @@ public class HomeFragment extends Fragment {
                             break;
                         case 7:
                             pl.load(root.getContext(), R.raw.voice_gaster_7, 0);
-
                             break;
                     }
-
+                    System.out.println("T2 is speaking");
+                    pl.load(root.getContext(),R.raw.half_a_second_of_silence,0);
 
                 }
-                //System.out.println(ed1.getText());
             }
-        });
+        };
 
-        return root;
+        Thread mythread = new Thread(runnable);
+        mythread.start();
+        /*
+        while(t2.isSpeaking()){
+            mythread.start();
+            mythread.sleep(100);
+            wait(100);
+        }*/
     }
 
     public void onPause(){
@@ -139,3 +177,4 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 }
+
