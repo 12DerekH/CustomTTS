@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
                 if(status != TextToSpeech.ERROR) {
                     t2.setLanguage(Locale.UK);
                     //t2.setSpeechRate((float) 0.8);
-                    t2.setPitch((float)0.1);
+                    t2.setPitch(0.1f);
                 }
             }
         });
@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 // The onLoadComplet method is called when a sound has completed loading.
                 soundPool.play(sampleId, 1f, 1f, 0, 0, 1);
-                //soundPool.setVolume(sampleId, 2f, 2f);
+                //soundPool.setVolume(sampleId, 5f, 5f);
                 // second and third parameters indicates left and right value (range = 0.0 to 1.0)
             }
         });
@@ -75,12 +75,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 String toSpeak = ed1.getText().toString();
 
-
                 //Toast.makeText(root.getContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                /*for (Object s: t1.getVoices().toArray()) {
-                    System.out.println(s.toString());
-                }*/
-                //Toast.makeText(root.getContext(), t1.getVoices().toString(), Toast.LENGTH_LONG).show();
+
                 //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
                 playTTS(root, toSpeak);
                 try {
@@ -99,16 +95,7 @@ public class HomeFragment extends Fragment {
 
     public void playTTS(View root, String toSpeak)
     {
-
-        Runnable runnable = new Runnable() {
-            public void run() {
-                t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
-                //t2.stop();
-            }
-        };
-
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+        t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
     }
 
     public void playBeeps(View root) throws InterruptedException {
@@ -143,6 +130,7 @@ public class HomeFragment extends Fragment {
                             break;
                     }
                     System.out.println("T2 is speaking");
+                    pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,0);
                     pl.load(root.getContext(),R.raw.half_a_second_of_silence,0);
 
                 }
