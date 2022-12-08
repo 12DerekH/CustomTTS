@@ -64,9 +64,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 // The onLoadComplet method is called when a sound has completed loading.
-                soundPool.play(sampleId, 1f, 1f, 0, 0, 1);
-                //soundPool.setVolume(sampleId, 5f, 5f);
-                // second and third parameters indicates left and right value (range = 0.0 to 1.0)
+                soundPool.play(sampleId, 1f, 1f, 0, 0, 1f);
             }
         });
 
@@ -86,7 +84,6 @@ public class HomeFragment extends Fragment {
                 }
                 //t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
 
-                //System.out.println(ed1.getText());
             }
         });
 
@@ -108,7 +105,6 @@ public class HomeFragment extends Fragment {
                     switch (randInt) {
                         case 1:
                             int sound1 = pl.load(root.getContext(), R.raw.voice_gaster_1, 0);
-                            pl.pause(sound1);
                             break;
                         case 2:
                             pl.load(root.getContext(), R.raw.voice_gaster_2, 0);
@@ -129,10 +125,14 @@ public class HomeFragment extends Fragment {
                             pl.load(root.getContext(), R.raw.voice_gaster_7, 0);
                             break;
                     }
-                    System.out.println("T2 is speaking");
-                    pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,0);
-                    pl.load(root.getContext(),R.raw.half_a_second_of_silence,0);
+                    pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,1);
+                    pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,1);
 
+
+                    if(!t2.isSpeaking()){
+                        break;
+                    }
+                    System.out.println("T2 is speaking");
                 }
             }
         };
