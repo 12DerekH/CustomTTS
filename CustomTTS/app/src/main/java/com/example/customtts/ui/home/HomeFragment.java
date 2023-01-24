@@ -99,7 +99,7 @@ public class HomeFragment extends Fragment {
 
         Runnable runnable = new Runnable() {
             public void run() {
-
+                pl.setVolume(root.getContext(),0.5f,0.5f)
                 while (t2.isSpeaking()) {
                     int randInt = (int) (Math.random() * (7 - 1 + 1) + 1);
                     switch (randInt) {
