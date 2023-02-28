@@ -27,6 +27,7 @@ public class HomeFragment extends Fragment {
     TextToSpeech t2;
     //final MediaPlayer mp = MediaPlayer.create(this, R.raw.voice_gaster_1_new);;
     SoundPool pl = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+    int streamID;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -36,55 +37,44 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        EditText ed1 =(EditText)root.findViewById(R.id.enterText);
-        Button b1 = (Button)root.findViewById(R.id.enterButton);
+        EditText ed1 = root.findViewById(R.id.enterText);
+        Button b1 = root.findViewById(R.id.enterButton);
+        Button b2 = root.findViewById(R.id.resetButton);
 
-        t1 = new TextToSpeech(root.getContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    t1.addSpeech("dolor", "raw/voice_gaster_1.wav");
-                    t1.setLanguage(Locale.UK);
-                }
+        t1 = new TextToSpeech(root.getContext(), status -> {
+            if(status != TextToSpeech.ERROR) {
+                t1.addSpeech("dolor", "raw/voice_gaster_1.wav");
+                t1.setLanguage(Locale.UK);
             }
         });
 
-        t2 = new TextToSpeech(root.getContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    t2.setLanguage(Locale.UK);
-                    //t2.setSpeechRate((float) 0.8);
-                    t2.setPitch(0.1f);
-                }
+        t2 = new TextToSpeech(root.getContext(), status -> {
+            if(status != TextToSpeech.ERROR) {
+                t2.setLanguage(Locale.UK);
+                //t2.setSpeechRate((float) 0.8);
+                t2.setPitch(0.5f);
             }
         });
 
-        pl.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                // The onLoadComplet method is called when a sound has completed loading.
-                soundPool.play(sampleId, 1f, 1f, 0, 0, 1f);
-            }
+        pl.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
+            // The onLoadComplet method is called when a sound has completed loading.
+            streamID = soundPool.play(sampleId, 0.1f, 0.1f, 0, 0, 1f);
         });
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String toSpeak = ed1.getText().toString();
+        b1.setOnClickListener(v -> {
+            String toSpeak = ed1.getText().toString();
 
-                //Toast.makeText(root.getContext(), toSpeak,Toast.LENGTH_SHORT).show();
-
-                //t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                playTTS(root, toSpeak);
-                try {
-                    playBeeps(root);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //t2.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
-
+            playTTS(root, toSpeak);
+            try {
+                playBeeps(root);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+
+        });
+
+        b2.setOnClickListener(v -> {
+            ed1.setText("");
         });
 
         return root;
@@ -99,7 +89,7 @@ public class HomeFragment extends Fragment {
 
         Runnable runnable = new Runnable() {
             public void run() {
-                pl.setVolume(root.getContext(),0.5f,0.5f)
+                pl.setVolume(streamID,0.3f,0.3f);
                 while (t2.isSpeaking()) {
                     int randInt = (int) (Math.random() * (7 - 1 + 1) + 1);
                     switch (randInt) {
@@ -126,8 +116,6 @@ public class HomeFragment extends Fragment {
                             break;
                     }
                     pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,1);
-                    pl.load(root.getContext(),R.raw.three_quater_seconds_of_silence,1);
-
 
                     if(!t2.isSpeaking()){
                         break;

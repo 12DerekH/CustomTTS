@@ -3,4 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="speak_button">Speak</string>
+    <string name="default_speech">You will be satisfied with the results</string>
+    <string name="reset_button">Reset</string>
 </resources>
